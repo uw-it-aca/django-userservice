@@ -1,5 +1,6 @@
 from django.http import HttpRequest
 from django.conf import settings
+from django.contrib.auth.models import User
 import logging
 
 from threading import currentThread
@@ -78,6 +79,9 @@ class UserServiceMiddleware(object):
 
         if "_us_override" in session:
             UserService._user_data[thread]["override_user"] = session["_us_override"]
+
+        new_user, created = User.objects.get_or_create(username=UserService().get_user())
+        request.user = new_user
 
     def process_response(self, request, response):
         thread = currentThread()
