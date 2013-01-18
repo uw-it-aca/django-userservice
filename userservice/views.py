@@ -4,6 +4,7 @@ from django.template import RequestContext
 from django.conf import settings
 from userservice.user import UserService
 import logging
+from authz_group import Group
 
 def support(request):
     #timer = Timer()
@@ -26,9 +27,11 @@ def support(request):
 #    gws = GWS()
 #    is_admin = gws.is_effective_member(settings.MYUW_ADMIN_GROUP, actual_user)
 
-    is_admin = True
+    g = Group()
+    group_name = settings.USERSERVICE_ADMIN_GROUP
+    is_admin = g.is_member_of_group(group_name, actual_user)
     if is_admin == False:
-        return  HttpResponseRedirect("no_access.html")
+        return render_to_response('no_access.html', {})
 
     if "override_as" in request.POST:
         user_service.set_override_user(request.POST["override_as"].strip())
