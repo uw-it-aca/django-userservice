@@ -21,11 +21,7 @@ def support(request):
 
     actual_user = user_service.get_original_user()
     if not actual_user:
-#        log_invalid_netid_response(logger, timer)
-        return invalid_session()
-
-#    gws = GWS()
-#    is_admin = gws.is_effective_member(settings.MYUW_ADMIN_GROUP, actual_user)
+        raise Exception("No user in session")
 
     g = Group()
     group_name = settings.USERSERVICE_ADMIN_GROUP
@@ -34,16 +30,23 @@ def support(request):
         return render_to_response('no_access.html', {})
 
     if "override_as" in request.POST:
-        user_service.set_override_user(request.POST["override_as"].strip())
+        new_user = request.POST["override_as"].strip()
+        logger.info("%s is impersonating %s",
+                    user_service.get_original_user(),
+                    new_user)
+        user_service.set_override_user(new_user)
 
     if "clear_override" in request.POST:
+        logger.info("%s is ending impersonation of %s",
+                    user_service.get_original_user(),
+                    user_service.get_override_user())
         user_service.clear_override()
 
     context = {
         'original_user': user_service.get_original_user(),
         'override_user': user_service.get_override_user(),
     }
-#    log_success_response(logger, timer)
+
     return render_to_response('support.html',
                               context,
                               context_instance=RequestContext(request))
