@@ -32,3 +32,9 @@ With all of that in place, request.user will be either the actual user, or the u
 
     # This will be the override user if it exists, the logged in user otherwise:
     user_service.get_user() 
+
+To make this a dependency for your app, add this to your requirements.txt:
+
+    -e git://github.com/vegitron/django-userservice#egg=Django-UserService
+
+
