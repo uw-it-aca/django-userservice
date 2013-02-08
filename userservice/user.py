@@ -28,7 +28,7 @@ class UserService:
 
         actual = self.get_original_user()
         if not actual or len(actual) == 0:
-            return self._get_authenticated_user()
+            return None
         return actual
 
     def get_original_user(self):
@@ -80,8 +80,10 @@ class UserServiceMiddleware(object):
         if "_us_override" in session:
             UserService._user_data[thread]["override_user"] = session["_us_override"]
 
-        new_user, created = User.objects.get_or_create(username=UserService().get_user())
-        request.user = new_user
+        username = UserService().get_user()
+        if username:
+            new_user, created = User.objects.get_or_create(username=username)
+            request.user = new_user
 
     def process_response(self, request, response):
         thread = currentThread()
