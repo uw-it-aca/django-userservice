@@ -10,7 +10,12 @@ class UserService:
     logger = logging.getLogger(__name__)
 
     def _get_current_user_data(self):
-        return UserService._user_data[currentThread()]
+        thread_id = currentThread()
+        if not UserService._user_data:
+            return {}
+        if thread_id in UserService._user_data:
+            return UserService._user_data[currentThread()]
+        return {}
 
     def _require_middleware(self):
         if not "initialized" in self._get_current_user_data():
