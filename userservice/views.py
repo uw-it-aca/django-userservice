@@ -25,7 +25,7 @@ def support(request):
 
     g = Group()
     group_name = settings.USERSERVICE_ADMIN_GROUP
-    is_admin = g.is_member_of_group(group_name, actual_user)
+    is_admin = g.is_member_of_group(actual_user, group_name)
     if is_admin == False:
         return render_to_response('no_access.html', {})
 
