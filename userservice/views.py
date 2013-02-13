@@ -5,7 +5,9 @@ from django.conf import settings
 from userservice.user import UserService
 import logging
 from authz_group import Group
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def support(request):
     #timer = Timer()
     logger = logging.getLogger(__name__)
