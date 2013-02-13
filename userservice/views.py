@@ -51,7 +51,7 @@ def support(request):
     }
 
     try:
-        template.loader.get_template("user_override_extra_info.html")
+        template.loader.get_template("userservice/user_override_extra_info.html")
         context['has_extra_template'] = True
     except template.TemplateDoesNotExist:
         # This is a fine exception - there doesn't need to be an extra info
