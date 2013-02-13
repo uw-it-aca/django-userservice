@@ -1,6 +1,7 @@
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django import template
 from django.conf import settings
 from userservice.user import UserService
 import logging
@@ -48,6 +49,14 @@ def support(request):
         'original_user': user_service.get_original_user(),
         'override_user': user_service.get_override_user(),
     }
+
+    try:
+        template.loader.get_template("user_override_extra_info.html")
+        context['has_extra_template'] = True
+    except template.TemplateDoesNotExist:
+        # This is a fine exception - there doesn't need to be an extra info
+        # template
+        pass
 
     return render_to_response('support.html',
                               context,

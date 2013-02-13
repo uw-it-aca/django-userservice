@@ -40,6 +40,9 @@
 <button class="btn btn-primary" type="submit">Submit</button>
 </form>
 
+{% if has_extra_template %}
+    {% include "user_override_extra_info.html" %}
+{% endif %}
 <!--
 Needs to do a url reverse list here:
 <a href="/mobile/"><i class="icon-arrow-left"></i> Back to MyUW Mobile</a>
