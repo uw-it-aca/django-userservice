@@ -36,5 +36,6 @@ With all of that in place, request.user will be either the actual user, or the u
 To make this a dependency for your app, add this to your requirements.txt:
 
     -e git://github.com/vegitron/django-userservice#egg=Django-UserService
+    -e git://github.com/vegitron/authz_group#egg=AuthZ-Group
 
 
