@@ -1,3 +1,0 @@
-[submodule "authz_group"]
-	path = authz_group
-	url = git://github.com/vegitron/authz_group.git
