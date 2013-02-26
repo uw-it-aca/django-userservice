@@ -98,7 +98,10 @@ class UserServiceMiddleware(object):
     def _get_authenticated_user(self, request):
         netid = None
         if settings.DEBUG:
-            netid = 'javerage'
+            if request.user.username:
+                netid = request.user.username
+            else:
+                netid = 'javerage'
         else:
             netid = request.user.username
 
