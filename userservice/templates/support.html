@@ -38,6 +38,9 @@
 <input type="text" name="override_as"> <br/>
 
 <button class="btn btn-primary" type="submit">Submit</button>
+{% if override_user_error %}
+<div><p style="color:#FF0000; font-weight:bold">{{ override_user_error }} is not a valid username for this application</p></div>
+{% endif %}
 </form>
 
 {% if has_extra_template %}
