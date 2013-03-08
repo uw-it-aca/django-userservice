@@ -17,7 +17,8 @@ def support(request):
 
     user_service = UserService()
     user_service.get_user()
-    override_user_error = None
+    override_error_username = None
+    override_error_msg = None
     # Do the group auth here.
 
     if not hasattr(settings, "USERSERVICE_ADMIN_GROUP"):
@@ -38,13 +39,15 @@ def support(request):
     if "override_as" in request.POST:
         new_user = request.POST["override_as"].strip()
         validation_module = _get_validation_module()
-        if validation_module(new_user):
+        validation_error = validation_module(new_user)
+        if validation_error is None:
             logger.info("%s is impersonating %s",
                         user_service.get_original_user(),
                         new_user)
             user_service.set_override_user(new_user)
         else:
-            override_user_error = new_user
+            override_error_username = new_user
+            override_error_msg = validation_error
 
     if "clear_override" in request.POST:
         logger.info("%s is ending impersonation of %s",
@@ -55,7 +58,8 @@ def support(request):
     context = {
         'original_user': user_service.get_original_user(),
         'override_user': user_service.get_override_user(),
-        'override_user_error': override_user_error
+        'override_error_username': override_error_username,
+        'override_error_msg': override_error_msg,
     }
 
     try:
@@ -89,4 +93,7 @@ def _get_validation_module():
     
     
 def validate(username):
-    return (len(username) > 0)
+    error_msg = "No override user supplied"
+    if (len(username) > 0):
+        error_msg = None
+    return error_msg
