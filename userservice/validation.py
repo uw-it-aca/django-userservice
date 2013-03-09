@@ -1,6 +1,6 @@
 import re
 
-def validate_override_user(username):
+def is_email(username):
     error_msg = "No override user supplied, please enter a user to override as in the format of an email address"
     if len(username) > 0:
         match = re.match('[^@]+@[^@]+\.[^@]+', username)
