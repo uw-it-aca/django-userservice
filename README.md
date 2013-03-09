@@ -19,6 +19,11 @@ If you want to allow anyone to be able to override - and don't do that in produc
 
     AUTHZ_GROUP_BACKEND = 'authz_group.authz_implementation.all_ok.AllOK'           
 
+If you want to validate the user ids required for override, add this to your settings.py:
+
+    USERSERVICE_VALIDATION_MODULE='userservice.validation.is_email'
+    
+The validation module can be replaced with a local implementation for your applicaiton.  
 
 With all of that in place, request.user will be either the actual user, or the user you are impersonating.  To get more information about the current user, you can use:
 
