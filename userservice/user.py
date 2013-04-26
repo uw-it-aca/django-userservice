@@ -36,6 +36,17 @@ class UserService:
             return None
         return actual
 
+    def get_acting_user(self):
+        self._require_middleware()
+        actual = self.get_original_user()
+        if not actual or len(actual) > 0:
+            return actual
+
+        override = self.get_override_user()
+        if override and len(override) == 0:
+            return None
+        return override
+
     def get_original_user(self):
         user_data = self._get_current_user_data()
         if "original_user" in user_data:
