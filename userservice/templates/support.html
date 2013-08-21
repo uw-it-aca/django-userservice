@@ -38,6 +38,9 @@
 <input type="text" name="override_as"> <br/>
 
 <button class="btn btn-primary" type="submit">Submit</button>
+{% if override_error_msg %}
+<div><p style="color:#FF0000; font-weight:bold">{{ override_error_msg }}{{ override_error_username }}</p></div>
+{% endif %}
 </form>
 
 {% if has_extra_template %}
