@@ -101,6 +101,8 @@ class UserServiceMiddleware(object):
             if request.user.username:
                 netid = request.user.username
             else:
+                if hasattr(settings, "USER_SERVICE_NO_DEFAULT_USER"):
+                    return None
                 netid = 'javerage'
         else:
             netid = request.user.username
