@@ -23,7 +23,7 @@
 <h4>You are overriding as:</h4>
 <h1 style="color:#ee5f5b;">{{ override_user }} </h1>
 
-<form action="{% url userservice.views.support %}" method="POST">
+<form action="{% url 'userservice.views.support' %}" method="POST">
 {% csrf_token %}
 <input type="hidden" name="clear_override" value="1"/>
 <button class="btn btn-danger" type="submit" value="Clear override">Clear Override</button>
@@ -31,7 +31,7 @@
 
 </div>
 
-<form action="{% url userservice.views.support %}" method="POST">
+<form action="{% url 'userservice.views.support' %}" method="POST">
 {% csrf_token %}
 
 <h4>Override as:</h4> 
