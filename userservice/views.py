@@ -71,6 +71,16 @@ def support(request):
         # template
         pass
 
+    try:
+        template.loader.get_template("userservice/user_override_wrapper.html")
+        context['wrapper_template'] = 'userservice/user_override_wrapper.html'
+    except template.TemplateDoesNotExist:
+        context['wrapper_template'] = 'support_wrapper.html'
+        # This is a fine exception - there doesn't need to be an extra info
+        # template
+        pass
+
+
     return render_to_response('support.html',
                               context,
                               context_instance=RequestContext(request))
