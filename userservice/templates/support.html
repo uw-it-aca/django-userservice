@@ -28,7 +28,7 @@
             <form action="{% url 'userservice.views.support' %}" method="POST">
             {% csrf_token %}
             
-            <input type="text" name="override_as" class="form-control" placeholder="Netid">
+            <input type="text" name="override_as" class="form-control" placeholder="Netid" autocorrect="off" autocapitalize="off" spellcheck="false">
             <button class="btn btn-block btn-primary" type="submit">Submit</button>
             </form>
             
