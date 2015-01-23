@@ -109,14 +109,15 @@ class UserServiceMiddleware(object):
     def _get_authenticated_user(self, request):
         netid = None
         if settings.DEBUG:
-            if request.user.username:
-                netid = request.user.username
+            if hasattr(request, 'user'):
+                if request.user.username:
+                    netid = request.user.username
             else:
-                if hasattr(settings, "USER_SERVICE_NO_DEFAULT_USER"):
-                    return None
-                netid = 'javerage'
+                if hasattr(settings, "USER_SERVICE_DEFAULT_USER"):
+                    netid = settings.USER_SERVICE_DEFAULT_USER
         else:
-            netid = request.user.username
+            if hasattr(request, 'user'):
+                netid = request.user.username
 
         return netid
 

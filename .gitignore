@@ -33,3 +33,13 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+#Django stuff
+/project/
+/manage.py
+/local/
+/include/
+
+# Vim stuff
+*.swp
+
