@@ -5,6 +5,7 @@ import logging
 
 from threading import currentThread
 
+
 class UserService:
     _user_data = {}
     logger = logging.getLogger(__name__)
@@ -18,9 +19,9 @@ class UserService:
         return {}
 
     def _require_middleware(self):
-        if not "initialized" in self._get_current_user_data():
-            print ("You need to have this line in your MIDDLEWARE_CLASSES:")
-            print ("'userservice.user.UserServiceMiddleware',")
+        if "initialized" not in self._get_current_user_data():
+            print("You need to have this line in your MIDDLEWARE_CLASSES:")
+            print("'userservice.user.UserServiceMiddleware',")
 
             raise Exception("You need the UserServiceMiddleware")
 
@@ -85,16 +86,18 @@ class UserServiceMiddleware(object):
         session = request.session
         UserService._user_data[thread]["session"] = session
 
-        if not "_us_user" in session:
+        if "_us_user" not in session:
             user = self._get_authenticated_user(request)
             if user:
                 UserService._user_data[thread]["original_user"] = user
                 UserService._user_data[thread]["session"]["_us_user"] = user
         else:
-            UserService._user_data[thread]["original_user"] = session["_us_user"]
+            data = session["_us_user"]
+            UserService._user_data[thread]["original_user"] = data
 
         if "_us_override" in session:
-            UserService._user_data[thread]["override_user"] = session["_us_override"]
+            data = session["_us_override"]
+            UserService._user_data[thread]["override_user"] = data
 
         username = UserService().get_user()
         if username:
@@ -120,5 +123,3 @@ class UserServiceMiddleware(object):
                 netid = request.user.username
 
         return netid
-
-

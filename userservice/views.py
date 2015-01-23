@@ -10,9 +10,10 @@ import logging
 from authz_group import Group
 from django.contrib.auth.decorators import login_required
 
+
 @login_required
 def support(request):
-    #timer = Timer()
+    # timer = Timer()
     logger = logging.getLogger(__name__)
 
     user_service = UserService()
@@ -33,7 +34,7 @@ def support(request):
     g = Group()
     group_name = settings.USERSERVICE_ADMIN_GROUP
     is_admin = g.is_member_of_group(actual_user, group_name)
-    if is_admin == False:
+    if not is_admin:
         return render_to_response('no_access.html', {})
 
     if "override_as" in request.POST:
@@ -63,9 +64,10 @@ def support(request):
     }
 
     try:
-        template.loader.get_template("userservice/user_override_extra_info.html")
+        template_name = "userservice/user_override_extra_info.html"
+        template.loader.get_template(template_name)
         context['has_extra_template'] = True
-        context['extra_template'] = 'userservice/user_override_extra_info.html'
+        context['extra_template'] = template_name
     except template.TemplateDoesNotExist:
         # This is a fine exception - there doesn't need to be an extra info
         # template
@@ -80,14 +82,15 @@ def support(request):
         # template
         pass
 
-
     return render_to_response('support.html',
                               context,
                               context_instance=RequestContext(request))
 
+
 def _get_validation_module():
     if hasattr(settings, "USERSERVICE_VALIDATION_MODULE"):
-        module, attr = getattr(settings, "USERSERVICE_VALIDATION_MODULE").rsplit('.', 1)
+        base = getattr(settings, "USERSERVICE_VALIDATION_MODULE")
+        module, attr = base.rsplit('.', 1)
         try:
             mod = import_module(module)
         except ImportError, e:
@@ -97,12 +100,12 @@ def _get_validation_module():
             validation_module = getattr(mod, attr)
         except AttributeError:
             raise ImproperlyConfigured('Module "%s" does not define a '
-                               '"%s" class' % (module, attr))
+                                       '"%s" class' % (module, attr))
         return validation_module
     else:
         return validate
-    
-    
+
+
 def validate(username):
     error_msg = "No override user supplied"
     if (len(username) > 0):
