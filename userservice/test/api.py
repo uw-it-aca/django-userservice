@@ -34,6 +34,7 @@ class TestAPI(TestCase):
         request.user = get_django_user('javerage')
 
         set_override_user(request, "supportticket")
+        self.assertEquals(request.user.username, 'supportticket')
         self.assertEquals(get_user(request), 'supportticket')
         self.assertEquals(get_acting_user(request), 'javerage')
         self.assertEquals(get_override_user(request), 'supportticket')
@@ -46,6 +47,7 @@ class TestAPI(TestCase):
 
         set_override_user(request, "supportticket")
         clear_override(request)
+        self.assertEquals(request.user.username, 'javerage')
 
         self.assertEquals(get_user(request), 'javerage')
         self.assertEquals(get_acting_user(request), 'javerage')

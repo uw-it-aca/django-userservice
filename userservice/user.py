@@ -135,3 +135,7 @@ def set_override_user(request, username):
 
 def clear_override(request):
     del request.session["_us_override_user"]
+
+    username = get_original_user(request)
+    new_user, created = User.objects.get_or_create(username=username)
+    request.user = new_user
