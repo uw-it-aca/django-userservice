@@ -49,11 +49,11 @@ setup(
     version='1.0.2',
     packages=[ 'userservice' ],
     package_data = package_data,
-    install_requires=['Django', 'AuthZ-Group' ],
+    install_requires=['Django', 'AuthZ-Group', 'unittest2' ],
     license = "Apache 2.0",
     author = "Patrick Michaud",
     author_email = "pmichaud@uw.edu",
     description = "User abstraction and impersonation for Django",
     keywords = "django user",
-    url = "https://github.com/vegitron/django-userservice"
+    url = "https://github.com/vegitron/django-userservice",
 )

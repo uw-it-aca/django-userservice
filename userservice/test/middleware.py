@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.conf import settings
 from django.test.client import RequestFactory
-from django.contrib.auth.models import User
 from userservice.user import UserServiceMiddleware, UserService
+from userservice.test import get_user
 
 class TestMiddleware(TestCase):
     def test_basic(self):
@@ -28,7 +28,7 @@ class TestMiddleware(TestCase):
         middleware = UserServiceMiddleware()
         request = RequestFactory().get("/")
         request.session = {}
-        request.user = self._get_user('javerage')
+        request.user = get_user('javerage')
 
         with self.settings(DEBUG=True):
             middleware.process_request(request)
@@ -50,7 +50,7 @@ class TestMiddleware(TestCase):
         middleware = UserServiceMiddleware()
         request = RequestFactory().get("/")
         request.session = {}
-        request.user = self._get_user('javerage')
+        request.user = get_user('javerage')
 
         with self.settings(DEBUG=True):
             middleware.process_request(request)
@@ -81,12 +81,3 @@ class TestMiddleware(TestCase):
             self.assertEquals(UserService().get_original_user(), 'javerage')
             self.assertEquals(UserService().get_override_user(), None)
             middleware.process_response(request, None)
-
-    def _get_user(self, username):
-        try:
-            user = User.objects.get(username=username)
-            return user
-        except Exception as ex:
-            user = User.objects.create_user(username, password='pass')
-            return user
-

@@ -23,8 +23,8 @@ def support(request):
     # Do the group auth here.
 
     if not hasattr(settings, "USERSERVICE_ADMIN_GROUP"):
-        print "You must have a group defined as your admin group."
-        print 'Configure that using USERSERVICE_ADMIN_GROUP="foo_group"'
+        print("You must have a group defined as your admin group.")
+        print('Configure that using USERSERVICE_ADMIN_GROUP="foo_group"')
         raise Exception("Missing USERSERVICE_ADMIN_GROUP in settings")
 
     actual_user = user_service.get_original_user()
@@ -93,7 +93,7 @@ def _get_validation_module():
         module, attr = base.rsplit('.', 1)
         try:
             mod = import_module(module)
-        except ImportError, e:
+        except ImportError as e:
             raise ImproperlyConfigured('Error importing module %s: "%s"' %
                                        (module, e))
         try:
