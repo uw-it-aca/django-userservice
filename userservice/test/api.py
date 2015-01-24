@@ -40,7 +40,7 @@ class TestAPI(TestCase):
         self.assertEquals(get_override_user(request), 'supportticket')
         self.assertEquals(get_original_user(request), 'javerage')
 
-    def test_override(self):
+    def test_clear_override(self):
         request = RequestFactory().get("/")
         request.session = {}
         request.user = get_django_user('javerage')
