@@ -34,7 +34,6 @@ class UserService:
         request = self.get_request()
         return get_user(request)
 
-
     def get_acting_user(self):
         self._require_middleware()
         request = self.get_request()
@@ -84,6 +83,7 @@ class UserServiceMiddleware(object):
         UserService._user_data[thread] = {}
         return response
 
+
 def get_user(request):
     override = get_override_user(request)
     if override and len(override) > 0:
@@ -126,7 +126,6 @@ def get_override_user(request):
 def set_override_user(request, username):
     if "_us_original_user" not in request.session:
         request.session["_us_original_user"] = request.user.username
-
 
     request.session["_us_override_user"] = username
 
