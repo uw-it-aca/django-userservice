@@ -5,7 +5,8 @@ from django import template
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
-from userservice.user import UserService
+from userservice.user import get_original_user, set_override_user
+from userservice.user import get_override_user, clear_override
 import logging
 from authz_group import Group
 from django.contrib.auth.decorators import login_required
@@ -16,8 +17,6 @@ def support(request):
     # timer = Timer()
     logger = logging.getLogger(__name__)
 
-    user_service = UserService()
-    user_service.get_user()
     override_error_username = None
     override_error_msg = None
     # Do the group auth here.
@@ -27,7 +26,7 @@ def support(request):
         print('Configure that using USERSERVICE_ADMIN_GROUP="foo_group"')
         raise Exception("Missing USERSERVICE_ADMIN_GROUP in settings")
 
-    actual_user = user_service.get_original_user()
+    actual_user = get_original_user(request)
     if not actual_user:
         raise Exception("No user in session")
 
@@ -43,22 +42,22 @@ def support(request):
         validation_error = validation_module(new_user)
         if validation_error is None:
             logger.info("%s is impersonating %s",
-                        user_service.get_original_user(),
+                        get_original_user(request),
                         new_user)
-            user_service.set_override_user(new_user)
+            set_override_user(request, new_user)
         else:
             override_error_username = new_user
             override_error_msg = validation_error
 
     if "clear_override" in request.POST:
         logger.info("%s is ending impersonation of %s",
-                    user_service.get_original_user(),
-                    user_service.get_override_user())
-        user_service.clear_override()
+                    get_original_user(request),
+                    get_override_user(request))
+        clear_override(request)
 
     context = {
-        'original_user': user_service.get_original_user(),
-        'override_user': user_service.get_override_user(),
+        'original_user': get_original_user(request),
+        'override_user': get_override_user(request),
         'override_error_username': override_error_username,
         'override_error_msg': override_error_msg,
     }
