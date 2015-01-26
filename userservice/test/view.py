@@ -25,7 +25,6 @@ def missing_url(name):
     'django.contrib.auth.middleware.RemoteUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'userservice.user.UserServiceMiddleware',
     ),
     AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',),
     USERSERVICE_ADMIN_GROUP = "x",
