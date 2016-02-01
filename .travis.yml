@@ -2,8 +2,6 @@ language: python
 python:
   - "2.7"
   - "2.6"
-  - "3.2"
-  - "3.3"
   - "3.4"
 install:
   - if [[ $TRAVIS_PYTHON_VERSION == 2.6* ]]; then pip install -r travis-ci/python-2.6-require-django-1.6.txt; fi
@@ -13,7 +11,8 @@ before_script:
   - pip install python-coveralls
   - pip install pep8
   - cp travis-ci/manage.py manage.py
-  - python manage.py syncdb --noinput
+  - if [[ $TRAVIS_PYTHON_VERSION == 2.6* ]]; then python manage.py syncdb --noinput; fi
+  - if [[ $TRAVIS_PYTHON_VERSION != 2.6* ]]; then python manage.py migrate; fi
 script:
   - pep8 userservice/ --exclude userservice/test
   - coverage run --source=userservice/ manage.py test userservice
