@@ -46,7 +46,7 @@ from setuptools import setup
 
 setup(
     name='Django-UserService',
-    version='1.0.2',
+    version='1.1.0',
     packages=[ 'userservice' ],
     package_data = package_data,
     install_requires=['Django', 'AuthZ-Group', 'unittest2' ],
