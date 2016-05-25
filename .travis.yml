@@ -1,24 +1,26 @@
+sudo: false
 language: python
 python:
+  - "3.4"
   - "2.7"
   - "2.6"
-  - "3.4"
 install:
   - if [[ $TRAVIS_PYTHON_VERSION == 2.6* ]]; then pip install -r travis-ci/python-2.6-require-django-1.6.txt; fi
   - pip install -r requirements.txt
+env:
+  - DJANGO_VERSION='<1.8'
+  - DJANGO_VERSION='<1.10'
 before_script:
   - pip install coverage
   - pip install python-coveralls
   - pip install pep8
+  - if [[ $TRAVIS_PYTHON_VERSION != 2.6* ]]; then pip install -U "Django$DJANGO_VERSION"; fi
   - cp travis-ci/manage.py manage.py
+  - if [[ $TRAVIS_PYTHON_VERSION != 2.6* ]]; then python manage.py migrate --noinput; fi
   - if [[ $TRAVIS_PYTHON_VERSION == 2.6* ]]; then python manage.py syncdb --noinput; fi
-  - if [[ $TRAVIS_PYTHON_VERSION != 2.6* ]]; then python manage.py migrate; fi
 script:
   - pep8 userservice/ --exclude userservice/test
+  - python -m compileall userservice/
   - coverage run --source=userservice/ manage.py test userservice
 after_script:
   - coveralls
-notifications:
-  webhooks:
-      urls:
-        - https://yarn.cac.washington.edu/rest/botalyst/v1/travis-ci

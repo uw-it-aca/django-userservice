@@ -4,17 +4,16 @@ from django.template import RequestContext
 from django import template
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-try:
-    # Available in python 2.7 and later
-    from importlib import import_module
-except Exception:
-    # For older versions, older versions of python would support it
-    from django.utils.importlib import import_module
 from userservice.user import get_original_user, set_override_user
 from userservice.user import get_override_user, clear_override
 import logging
 from authz_group import Group
 from django.contrib.auth.decorators import login_required
+try:
+    from importlib import import_module
+except ImportError:
+    # Django versions < 1.9
+    from django.utils.importlib import import_module
 
 
 @login_required
