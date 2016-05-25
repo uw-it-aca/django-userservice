@@ -103,6 +103,29 @@ class TestView(TestCase):
         self.assertEquals(get_override_user(request), 'testover8')
 
 
+    @override_settings(AUTHZ_GROUP_BACKEND = 'authz_group.authz_implementation.all_ok.AllOK',
+                       USERSERVICE_TRANSFORMATION_MODULE='userservice.test.view.add_washington')
+    def test_transform(self):
+        c = Client()
+
+        get_django_user('javerage')
+        c.login(username='javerage', password='pass')
+
+
+        request = RequestFactory().get("/")
+        request.session = c.session
+        request.user = get_django_user('javerage')
+
+        response = c.post(reverse("override"), { "override_as": "testover8" })
+
+        self.assertEquals(get_user(request), 'testover8@uw.edu')
+        self.assertEquals(get_acting_user(request), 'javerage')
+        self.assertEquals(get_original_user(request), 'javerage')
+        self.assertEquals(get_override_user(request), 'testover8@uw.edu')
+
+
+def add_washington(username):
+    return "%s@uw.edu" % username
 
 
 def under8(username):

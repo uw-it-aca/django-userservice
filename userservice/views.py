@@ -41,7 +41,8 @@ def support(request):
         return render_to_response('no_access.html', {})
 
     if "override_as" in request.POST:
-        new_user = request.POST["override_as"].strip()
+        transformation_module = _get_username_transform_module()
+        new_user = transformation_module(request.POST["override_as"])
         validation_module = _get_validation_module()
         validation_error = validation_module(new_user)
         if validation_error is None:
@@ -90,23 +91,33 @@ def support(request):
                               context_instance=RequestContext(request))
 
 
+def _get_username_transform_module():
+    if hasattr(settings, "USERSERVICE_TRANSFORMATION_MODULE"):
+        return _get_module(settings.USERSERVICE_TRANSFORMATION_MODULE)
+    else:
+        return transform
+
+
 def _get_validation_module():
     if hasattr(settings, "USERSERVICE_VALIDATION_MODULE"):
-        base = getattr(settings, "USERSERVICE_VALIDATION_MODULE")
-        module, attr = base.rsplit('.', 1)
-        try:
-            mod = import_module(module)
-        except ImportError as e:
-            raise ImproperlyConfigured('Error importing module %s: "%s"' %
-                                       (module, e))
-        try:
-            validation_module = getattr(mod, attr)
-        except AttributeError:
-            raise ImproperlyConfigured('Module "%s" does not define a '
-                                       '"%s" class' % (module, attr))
-        return validation_module
+        return _get_module(settings.USERSERVICE_VALIDATION_MODULE)
     else:
         return validate
+
+
+def _get_module(base):
+    module, attr = base.rsplit('.', 1)
+    try:
+        mod = import_module(module)
+    except ImportError as e:
+        raise ImproperlyConfigured('Error importing module %s: "%s"' %
+                                   (module, e))
+    try:
+        validation_module = getattr(mod, attr)
+    except AttributeError:
+        raise ImproperlyConfigured('Module "%s" does not define a '
+                                   '"%s" class' % (module, attr))
+    return validation_module
 
 
 def validate(username):
@@ -114,3 +125,7 @@ def validate(username):
     if (len(username) > 0):
         error_msg = None
     return error_msg
+
+
+def transform(username):
+    return username.strip()
