@@ -1,38 +1,42 @@
 sudo: false
 language: python
 python:
-  - "3.4"
-  - "2.7"
-  - "2.6"
-install:
-  - pip install -r requirements.txt
+- '2.6'
+- '2.7'
+- '3.4'
 env:
-  - DJANGO_VERSION=1.6.*
-  - DJANGO_VERSION=1.7.*
-  - DJANGO_VERSION=1.8.*
-  - DJANGO_VERSION=1.9.*
-  - DJANGO_VERSION=1.10.*
+- DJANGO_VERSION=1.6.*
+- DJANGO_VERSION=1.7.*
+- DJANGO_VERSION=1.8.*
+- DJANGO_VERSION=1.9.*
+- DJANGO_VERSION=1.10.*
 matrix:
   exclude:
-    - python: 2.6
-      env: DJANGO_VERSION=1.7.*
-    - python: 2.6
-      env: DJANGO_VERSION=1.8.*
-    - python: 2.6
-      env: DJANGO_VERSION=1.9.*
-    - python: 2.6
-      env: DJANGO_VERSION=1.10.*
+  - python: '2.6'
+    env: DJANGO_VERSION=1.7.*
+  - python: '2.6'
+    env: DJANGO_VERSION=1.8.*
+  - python: '2.6'
+    env: DJANGO_VERSION=1.9.*
+  - python: '2.6'
+    env: DJANGO_VERSION=1.10.*
+install:
+- pip install -r requirements.txt
 before_script:
-  - pip install coverage
-  - pip install python-coveralls
-  - pip install pep8
-  - pip install -U Django==$DJANGO_VERSION
-  - cp travis-ci/manage.py manage.py
-  - if [[ $TRAVIS_PYTHON_VERSION != 2.6* ]]; then python manage.py migrate --noinput; fi
-  - if [[ $TRAVIS_PYTHON_VERSION == 2.6* ]]; then python manage.py syncdb --noinput; fi
+- pip install coverage
+- pip install python-coveralls
+- pip install pep8
+- pip install -U Django==$DJANGO_VERSION
+- cp travis-ci/manage.py manage.py
+- if [[ $TRAVIS_PYTHON_VERSION != 2.6* ]]; then python manage.py migrate --noinput;
+  fi
+- if [[ $TRAVIS_PYTHON_VERSION == 2.6* ]]; then python manage.py syncdb --noinput;
+  fi
 script:
-  - pep8 userservice/ --exclude userservice/test
-  - python -m compileall userservice/
-  - coverage run --source=userservice/ manage.py test userservice
+- pep8 userservice/ --exclude userservice/test
+- python -m compileall userservice/
+- coverage run --source=userservice/ manage.py test userservice
 after_script:
-  - coveralls
+- coveralls
+whatever:
+  secure: eZKBXM4wnODovBipuBKAzjQCUgHwShOuLuux/QwSZW19B5rAMsuVx7sls+g2MnZ5sdlhMvcLIuPELbyPxXDwDgSab/ghxuFquT+tyPcfwGDYysWusF02qlBoVDCUbT7sQwBf47VQASOdIY1QxFOqBHgHaIJUkCHtgwyveDif73c=
