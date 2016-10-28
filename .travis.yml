@@ -37,8 +37,8 @@ script:
 after_script:
 - coveralls
 before_deploy:
-- find supporttools/ -name \*.pyc -exec rm {} \;
-- echo $TRAVIS_TAG > supporttools/VERSION
+- find userservice/ -name \*.pyc -exec rm {} \;
+- echo $TRAVIS_TAG > userservice/VERSION
 deploy:
   provider: pypi
   server: https://testpypi.python.org/pypi
