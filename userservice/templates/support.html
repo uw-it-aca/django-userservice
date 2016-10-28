@@ -13,7 +13,7 @@
         <div style="margin: 0 auto;">
             <div class="user-service-sub-heading">You are overriding as:&nbsp;&nbsp;<span class="text-danger user-service-override-user">{{ override_user }} </span>
 </div>
-            <form action="{% url 'userservice.views.support' %}" method="POST">
+            <form action="{% url 'userservice_override' %}" method="POST">
             {% csrf_token %}
             <input type="hidden" name="clear_override" value="1"/>
             <button class="btn btn-block btn-danger" type="submit" value="Clear override">Clear Override</button>
@@ -25,7 +25,7 @@
         
         <div style="margin: 0 auto;">
         
-            <form action="{% url 'userservice.views.support' %}" method="POST">
+            <form action="{% url 'userservice_override' %}" method="POST">
             {% csrf_token %}
             
             <input type="text" name="override_as" class="form-control" placeholder="Netid" autocorrect="off" autocapitalize="off" spellcheck="false">
