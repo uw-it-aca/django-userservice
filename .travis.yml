@@ -38,5 +38,3 @@ script:
 - coverage run --source=userservice/ manage.py test userservice
 after_script:
 - coveralls
-whatever:
-  secure: eZKBXM4wnODovBipuBKAzjQCUgHwShOuLuux/QwSZW19B5rAMsuVx7sls+g2MnZ5sdlhMvcLIuPELbyPxXDwDgSab/ghxuFquT+tyPcfwGDYysWusF02qlBoVDCUbT7sQwBf47VQASOdIY1QxFOqBHgHaIJUkCHtgwyveDif73c=
