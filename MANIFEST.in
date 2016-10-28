@@ -1,1 +1,2 @@
-recursive-include userservice/templates *
+include userservice/VERSION
+recursive-include userservice *
