@@ -28,13 +28,25 @@ before_script:
 - pip install pep8
 - pip install -U Django==$DJANGO_VERSION
 - cp travis-ci/manage.py manage.py
-- if [[ $DJANGO_VERSION != 1.6.* ]]; then python manage.py migrate --noinput;
-  fi
-- if [[ $DJANGO_VERSION == 1.6.* ]]; then python manage.py syncdb --noinput;
-  fi
+- if [[ $DJANGO_VERSION != 1.6.* ]]; then python manage.py migrate --noinput; fi
+- if [[ $DJANGO_VERSION == 1.6.* ]]; then python manage.py syncdb --noinput; fi
 script:
 - pep8 userservice/ --exclude userservice/test
 - python -m compileall userservice/
 - coverage run --source=userservice/ manage.py test userservice
 after_script:
 - coveralls
+before_deploy:
+- find userservice/ -name \*.pyc -exec rm {} \;
+- echo $TRAVIS_TAG > userservice/VERSION
+deploy:
+  provider: pypi
+  server: https://pypi.python.org/pypi
+  user: uw-it-aca
+  skip_cleanup: true
+  on:
+    tags: true
+    python: '2.7'
+    condition: $DJANGO_VERSION = 1.10.*
+  password:
+    secure: HRCc62TaAPwnepuK9hydrYPi8BmjrG7I5X88zKuxBY3EeHbgBQxy2Wuxmm/dQjQ/rTqVEwHXPw/P6sXmMdKI38Gnq0wyKqyax9C9vLmuS1d28uqEv1qV4d33HMHCt9XGmiV658z2TQtfYS9Ivg0NiViHrCSrvN209dvvxizZ8LM=
