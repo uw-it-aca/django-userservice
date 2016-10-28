@@ -31,7 +31,7 @@ def missing_url(name):
     USERSERVICE_ADMIN_GROUP = "x",
 )
 class TestView(TestCase):
-    @skipIf(missing_url("override"), "URLs not configured")
+    @skipIf(missing_url("userservice_override"), "URLs not configured")
 
     @override_settings(AUTHZ_GROUP_BACKEND = 'authz_group.authz_implementation.all_ok.AllOK')
     def test_override(self):
@@ -44,7 +44,7 @@ class TestView(TestCase):
         request.session = c.session
         request.user = get_django_user('javerage')
 
-        response = c.post(reverse("override"), { "override_as": "testover" })
+        response = c.post(reverse("userservice_override"), { "override_as": "testover" })
         request.session = c.session
 
         self.assertEquals(get_user(request), 'testover')
@@ -52,7 +52,7 @@ class TestView(TestCase):
         self.assertEquals(get_original_user(request), 'javerage')
         self.assertEquals(get_override_user(request), 'testover')
 
-        response = c.post(reverse("override"), { "clear_override": 1})
+        response = c.post(reverse("userservice_override"), { "clear_override": 1})
 
         request = RequestFactory().get("/")
         request.session = c.session
@@ -75,7 +75,7 @@ class TestView(TestCase):
         request.session = c.session
         request.user = get_django_user('javerage')
 
-        response = c.post(reverse("override"), { "override_as": "testover8" })
+        response = c.post(reverse("userservice_override"), { "override_as": "testover8" })
 
         self.assertEquals(get_user(request), 'javerage')
         self.assertEquals(get_acting_user(request), 'javerage')
@@ -95,7 +95,7 @@ class TestView(TestCase):
         request.session = c.session
         request.user = get_django_user('javerage')
 
-        response = c.post(reverse("override"), { "override_as": "testover8" })
+        response = c.post(reverse("userservice_override"), { "override_as": "testover8" })
 
         self.assertEquals(get_user(request), 'testover8')
         self.assertEquals(get_acting_user(request), 'javerage')
@@ -116,7 +116,7 @@ class TestView(TestCase):
         request.session = c.session
         request.user = get_django_user('javerage')
 
-        response = c.post(reverse("override"), { "override_as": "testover8" })
+        response = c.post(reverse("userservice_override"), { "override_as": "testover8" })
 
         self.assertEquals(get_user(request), 'testover8@uw.edu')
         self.assertEquals(get_acting_user(request), 'javerage')

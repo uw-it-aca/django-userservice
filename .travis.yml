@@ -5,16 +5,28 @@ python:
   - "2.7"
   - "2.6"
 install:
-  - if [[ $TRAVIS_PYTHON_VERSION == 2.6* ]]; then pip install -r travis-ci/python-2.6-require-django-1.6.txt; fi
   - pip install -r requirements.txt
 env:
-  - DJANGO_VERSION='<1.8'
-  - DJANGO_VERSION='<1.10'
+  - DJANGO_VERSION==1.6.*
+  - DJANGO_VERSION==1.7.*
+  - DJANGO_VERSION==1.8.*
+  - DJANGO_VERSION==1.9.*
+  - DJANGO_VERSION==1.10.*
+matrix:
+  exclude:
+    - python: 2.6
+      env: DJANGO_VERSION==1.7.*
+    - python: 2.6
+      env: DJANGO_VERSION==1.8.*
+    - python: 2.6
+      env: DJANGO_VERSION==1.9.*
+    - python: 2.6
+      env: DJANGO_VERSION==1.10.*
 before_script:
   - pip install coverage
   - pip install python-coveralls
   - pip install pep8
-  - if [[ $TRAVIS_PYTHON_VERSION != 2.6* ]]; then pip install -U "Django$DJANGO_VERSION"; fi
+  - then pip install -U "Django$DJANGO_VERSION"
   - cp travis-ci/manage.py manage.py
   - if [[ $TRAVIS_PYTHON_VERSION != 2.6* ]]; then python manage.py migrate --noinput; fi
   - if [[ $TRAVIS_PYTHON_VERSION == 2.6* ]]; then python manage.py syncdb --noinput; fi

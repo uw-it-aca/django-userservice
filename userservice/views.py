@@ -1,6 +1,5 @@
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django import template
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -38,7 +37,7 @@ def support(request):
     group_name = settings.USERSERVICE_ADMIN_GROUP
     is_admin = g.is_member_of_group(actual_user, group_name)
     if not is_admin:
-        return render_to_response('no_access.html', {})
+        return render(request, 'no_access.html', {})
 
     if "override_as" in request.POST:
         transformation_module = _get_username_transform_module()
@@ -86,9 +85,9 @@ def support(request):
         # template
         pass
 
-    return render_to_response('support.html',
-                              context,
-                              context_instance=RequestContext(request))
+    return render(request,
+                  'support.html',
+                  context)
 
 
 def _get_username_transform_module():
