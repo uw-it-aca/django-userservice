@@ -73,6 +73,7 @@ class UserService:
 class UserServiceMiddleware(object):
 
     logger = logging.getLogger(__name__)
+
     def __init__(self, get_response=None):
         self.get_response = get_response
 
