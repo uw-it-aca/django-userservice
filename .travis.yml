@@ -26,7 +26,7 @@ before_script:
   - pip install coverage
   - pip install python-coveralls
   - pip install pep8
-  - then pip install -U "Django$DJANGO_VERSION"
+  - pip install -U "Django$DJANGO_VERSION"
   - cp travis-ci/manage.py manage.py
   - if [[ $TRAVIS_PYTHON_VERSION != 2.6* ]]; then python manage.py migrate --noinput; fi
   - if [[ $TRAVIS_PYTHON_VERSION == 2.6* ]]; then python manage.py syncdb --noinput; fi
