@@ -1,59 +1,45 @@
-#!/usr/bin/env python
-
-
-# Taken from django's setup.py:
-
 import os
-
-packages, package_data = [], {}
-
-def is_package(package_name):
-    return True
-
-def fullsplit(path, result=None):
-    """
-Split a pathname into components (the opposite of os.path.join)
-in a platform-neutral way.
-"""
-    if result is None:
-        result = []
-    head, tail = os.path.split(path)
-    if head == '':
-        return [tail] + result
-    if head == path:
-        return result
-    return fullsplit(head, [tail] + result)
-
-
-
-for dirpath, dirnames, filenames in os.walk("userservice"):
-    # Ignore PEP 3147 cache dirs and those whose names start with '.'
-    dirnames[:] = [d for d in dirnames if not d.startswith('.') and d != '__pycache__']
-    parts = fullsplit(dirpath)
-    package_name = '.'.join(parts)
-    if '__init__.py' in filenames and is_package(package_name):
-        packages.append(package_name)
-    elif filenames:
-        relative_path = []
-        while '.'.join(parts) not in packages:
-            relative_path.append(parts.pop())
-        relative_path.reverse()
-        path = os.path.join(*relative_path)
-        package_files = package_data.setdefault('.'.join(parts), [])
-        package_files.extend([os.path.join(path, f) for f in filenames])
-
 from setuptools import setup
 
+README = """
+See the README on `GitHub
+<https://github.com/uw-it-aca/django-userservice>`_.
+"""
+
+# The VERSION file is created by travis-ci, based on the tag name
+version_path = 'userservice/VERSION'
+VERSION = open(os.path.join(os.path.dirname(__file__), version_path)).read()
+VERSION = VERSION.replace("\n", "")
+
+# allow setup.py to be run from any path
+os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
+
+url = "https://github.com/uw-it-aca/django-userservice"
 setup(
     name='Django-UserService',
-    version='1.1.0',
-    packages=[ 'userservice' ],
-    package_data = package_data,
-    install_requires=['Django', 'AuthZ-Group', 'unittest2' ],
-    license = "Apache 2.0",
-    author = "Patrick Michaud",
-    author_email = "pmichaud@uw.edu",
-    description = "User abstraction and impersonation for Django",
-    keywords = "django user",
-    url = "https://github.com/vegitron/django-userservice",
+    version=VERSION,
+    packages=['userservice'],
+    author="UW-IT AXDD",
+    author_email="aca-it@uw.edu",
+    include_package_data=True,
+    install_requires=[
+        'setuptools',
+        'django',
+        'AuthZ-Group',
+        'unittest2',
+    ],
+    license='Apache License, Version 2.0',
+    description=('User abstraction and impersonation for Django'),
+    long_description=README,
+    url=url,
+    classifiers=[
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Apache Software License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.4',
+    ],
 )
+
+
