@@ -41,12 +41,12 @@ before_deploy:
 - echo $TRAVIS_TAG > userservice/VERSION
 deploy:
   provider: pypi
-  server: https://testpypi.python.org/pypi
-  user: uw-it-axdd
+  server: https://pypi.python.org/pypi
+  user: uw-it-aca
   skip_cleanup: true
   on:
     tags: true
     python: '2.7'
     condition: $DJANGO_VERSION = 1.10.*
   password:
-    secure: oGTpVDbn29gyJpvAJKHLBg6dl1E2OPeD1RZXpmuypr6KyEhg9YbrzfIy4qwHQmclnzm0GjgHDAbL18/lxLNCrh+/H0ozTQBfe0eqBeCOGB7zZ/WWlqVoZxfZHZh/NacP4i0OiBISYP/s7RdYe9iQJAe65m2xvJqMwySv2wSVojg=
+    secure: HRCc62TaAPwnepuK9hydrYPi8BmjrG7I5X88zKuxBY3EeHbgBQxy2Wuxmm/dQjQ/rTqVEwHXPw/P6sXmMdKI38Gnq0wyKqyax9C9vLmuS1d28uqEv1qV4d33HMHCt9XGmiV658z2TQtfYS9Ivg0NiViHrCSrvN209dvvxizZ8LM=
