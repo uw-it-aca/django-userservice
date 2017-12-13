@@ -3,7 +3,7 @@ from django.http import HttpRequest
 from django.conf import settings
 from django.contrib.auth.models import User
 from threading import currentThread
-from userservice.util import get_uid
+from userservice.username import get_uid
 
 
 class UninitializedError(Exception):
