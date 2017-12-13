@@ -1,9 +1,9 @@
+import logging
 from django.http import HttpRequest
 from django.conf import settings
 from django.contrib.auth.models import User
-import logging
-
 from threading import currentThread
+from userservice.util import get_uid
 
 
 class UninitializedError(Exception):
@@ -129,7 +129,7 @@ def get_original_user(request):
         return request.session["_us_original_user"]
 
     if hasattr(request, 'user'):
-        return request.user.username
+        return get_uid(request.user.username)
 
     return None
 
@@ -143,7 +143,7 @@ def get_override_user(request):
 
 def set_override_user(request, username):
     if "_us_original_user" not in request.session:
-        request.session["_us_original_user"] = request.user.username
+        request.session["_us_original_user"] = get_uid(request.user.username)
 
     request.session["_us_override_user"] = username
 
