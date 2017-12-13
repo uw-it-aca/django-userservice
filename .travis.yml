@@ -25,13 +25,13 @@ install:
 before_script:
 - pip install coverage
 - pip install python-coveralls
-- pip install pep8
+- pip install pycodestyle
 - pip install -U Django==$DJANGO_VERSION
 - cp travis-ci/manage.py manage.py
 - if [[ $DJANGO_VERSION != 1.6.* ]]; then python manage.py migrate --noinput; fi
 - if [[ $DJANGO_VERSION == 1.6.* ]]; then python manage.py syncdb --noinput; fi
 script:
-- pep8 userservice/ --exclude userservice/test
+- pycodestyle userservice/ --exclude userservice/test
 - python -m compileall userservice/
 - coverage run --source=userservice/ manage.py test userservice
 after_script:
@@ -41,7 +41,6 @@ before_deploy:
 - echo $TRAVIS_TAG > userservice/VERSION
 deploy:
   provider: pypi
-  server: https://pypi.python.org/pypi
   user: uw-it-aca
   skip_cleanup: true
   on:
