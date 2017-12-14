@@ -1,4 +1,3 @@
-import re
 from django.conf import settings
 
 
@@ -12,13 +11,10 @@ def expect_uid():
         (username_format == "uid" or username_format == "uwnetid")
 
 
-EPPN_PATTERN =\
-    re.compile(r'^([^@]+)@[a-z0-9_-]+\.[a-z]+$', re.I)
-
-
 def get_uid(username):
     if username is not None and len(username) and expect_uid():
-        found = re.match(EPPN_PATTERN, username)
-        if found and found.group(1) and len(found.group(1)):
-            return found.group(1)
+        try:
+            (username, domain) = username.split('@', 1)
+        except ValueError as ex:
+            pass
     return username
