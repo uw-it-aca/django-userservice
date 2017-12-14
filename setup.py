@@ -23,8 +23,7 @@ setup(
     author_email="aca-it@uw.edu",
     include_package_data=True,
     install_requires=[
-        'setuptools',
-        'django',
+        'django==1.10.5',
         'AuthZ-Group',
         'unittest2',
     ],
