@@ -14,6 +14,7 @@ before_script:
 - pip install -U Django==$DJANGO_VERSION
 - cp travis-ci/manage.py manage.py
 - python manage.py migrate --noinput;
+script:
 - pycodestyle userservice/ --exclude userservice/test
 - python -m compileall userservice/
 - coverage run --source=userservice/ manage.py test userservice
