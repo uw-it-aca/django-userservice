@@ -1,25 +1,10 @@
 sudo: false
 language: python
 python:
-- '2.6'
 - '2.7'
-- '3.4'
+- '3.6'
 env:
-- DJANGO_VERSION=1.6.*
-- DJANGO_VERSION=1.7.*
-- DJANGO_VERSION=1.8.*
-- DJANGO_VERSION=1.9.*
-- DJANGO_VERSION=1.10.*
-matrix:
-  exclude:
-  - python: '2.6'
-    env: DJANGO_VERSION=1.7.*
-  - python: '2.6'
-    env: DJANGO_VERSION=1.8.*
-  - python: '2.6'
-    env: DJANGO_VERSION=1.9.*
-  - python: '2.6'
-    env: DJANGO_VERSION=1.10.*
+- DJANGO_VERSION=1.11.*
 install:
 - pip install -r requirements.txt
 before_script:
@@ -28,8 +13,7 @@ before_script:
 - pip install pycodestyle
 - pip install -U Django==$DJANGO_VERSION
 - cp travis-ci/manage.py manage.py
-- if [[ $DJANGO_VERSION != 1.6.* ]]; then python manage.py migrate --noinput; fi
-- if [[ $DJANGO_VERSION == 1.6.* ]]; then python manage.py syncdb --noinput; fi
+- python manage.py migrate --noinput;
 script:
 - pycodestyle userservice/ --exclude userservice/test
 - python -m compileall userservice/
@@ -45,7 +29,7 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    python: '2.7'
-    condition: $DJANGO_VERSION = 1.10.*
+    python: '3.6'
+    condition: $DJANGO_VERSION = 1.11.*
   password:
     secure: HRCc62TaAPwnepuK9hydrYPi8BmjrG7I5X88zKuxBY3EeHbgBQxy2Wuxmm/dQjQ/rTqVEwHXPw/P6sXmMdKI38Gnq0wyKqyax9C9vLmuS1d28uqEv1qV4d33HMHCt9XGmiV658z2TQtfYS9Ivg0NiViHrCSrvN209dvvxizZ8LM=
