@@ -7,17 +7,9 @@ And this to your MIDDLEWARE_CLASSES:
     'userservice.user.UserServiceMiddleware',                                   
 
 
-This project uses authz_group to control access to the user override app.  If you want to use that app, add this to your project/urls.py:
+This project uses a function "can_override()" defined in your app to control access to the user override app. It finds it via USERSERVICE_OVERRIDE_AUTH_MODULE in your setting.py:
 
-
-and this to your setting.py:
-
-    AUTHZ_GROUP_BACKEND = 'authz_group.authz_implementation....'           
-    USERSERVICE_ADMIN_GROUP = '... group name ...' 
-
-If you want to allow anyone to be able to override - and don't do that in production - you can use this:
-
-    AUTHZ_GROUP_BACKEND = 'authz_group.authz_implementation.all_ok.AllOK'           
+    USERSERVICE_OVERRIDE_AUTH_MODULE = 'your_app.module.can_override'
 
 If you want to validate the user ids required for override, add this to your settings.py:
 
