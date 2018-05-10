@@ -23,8 +23,7 @@ setup(
     author_email="aca-it@uw.edu",
     include_package_data=True,
     install_requires=[
-        'django==1.10.5',
-        'AuthZ-Group',
+        'django==1.11',
         'unittest2',
     ],
     license='Apache License, Version 2.0',
