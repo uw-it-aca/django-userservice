@@ -28,12 +28,11 @@ def missing_url(name):
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     ),
     AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',),
-    USERSERVICE_ADMIN_GROUP = "x",
 )
 class TestView(TestCase):
     @skipIf(missing_url("userservice_override"), "URLs not configured")
 
-    @override_settings(AUTHZ_GROUP_BACKEND = 'authz_group.authz_implementation.all_ok.AllOK')
+    @override_settings(USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.view.can_override')
     def test_override(self):
         c = Client()
 
@@ -62,7 +61,7 @@ class TestView(TestCase):
         self.assertEquals(get_original_user(request), 'javerage')
         self.assertEquals(get_override_user(request), None)
 
-    @override_settings(AUTHZ_GROUP_BACKEND = 'authz_group.authz_implementation.all_ok.AllOK',
+    @override_settings(USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.view.can_override',
                        USERSERVICE_VALIDATION_MODULE='userservice.test.view.under8')
     def test_validation(self):
         c = Client()
@@ -82,7 +81,7 @@ class TestView(TestCase):
         self.assertEquals(get_original_user(request), 'javerage')
         self.assertEquals(get_override_user(request), None)
 
-    @override_settings(AUTHZ_GROUP_BACKEND = 'authz_group.authz_implementation.all_ok.AllOK',
+    @override_settings(USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.view.can_override',
                        USERSERVICE_VALIDATION_MODULE='userservice.test.view.over8')
     def test_validation(self):
         c = Client()
@@ -103,7 +102,7 @@ class TestView(TestCase):
         self.assertEquals(get_override_user(request), 'testover8')
 
 
-    @override_settings(AUTHZ_GROUP_BACKEND = 'authz_group.authz_implementation.all_ok.AllOK',
+    @override_settings(USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.view.can_override',
                        USERSERVICE_TRANSFORMATION_MODULE='userservice.test.view.add_washington')
     def test_transform(self):
         c = Client()
@@ -126,6 +125,10 @@ class TestView(TestCase):
 
 def add_washington(username):
     return "%s@uw.edu" % username
+
+
+def can_override():
+    return True
 
 
 def under8(username):

@@ -1,18 +1,13 @@
+import logging
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django import template
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from userservice.user import get_original_user, set_override_user
-from userservice.user import get_override_user, clear_override
-import logging
-from authz_group import Group
 from django.contrib.auth.decorators import login_required
-try:
-    from importlib import import_module
-except ImportError:
-    # Django versions < 1.9
-    from django.utils.importlib import import_module
+from importlib import import_module
+from userservice.user import (get_original_user, set_override_user,
+                              get_override_user, clear_override)
 
 
 @login_required
@@ -24,19 +19,12 @@ def support(request):
     override_error_msg = None
     # Do the group auth here.
 
-    if not hasattr(settings, "USERSERVICE_ADMIN_GROUP"):
-        print("You must have a group defined as your admin group.")
-        print('Configure that using USERSERVICE_ADMIN_GROUP="foo_group"')
-        raise Exception("Missing USERSERVICE_ADMIN_GROUP in settings")
-
     actual_user = get_original_user(request)
     if not actual_user:
         raise Exception("No user in session")
 
-    g = Group()
-    group_name = settings.USERSERVICE_ADMIN_GROUP
-    is_admin = g.is_member_of_group(actual_user, group_name)
-    if not is_admin:
+    can_override = _get_override_auth_module()
+    if not can_override():
         return render(request, 'no_access.html', {})
 
     if "override_as" in request.POST:
@@ -46,7 +34,7 @@ def support(request):
         validation_error = validation_module(new_user)
         if validation_error is None:
             logger.info("%s is impersonating %s",
-                        get_original_user(request),
+                        actual_user,
                         new_user)
             set_override_user(request, new_user)
         else:
@@ -55,12 +43,12 @@ def support(request):
 
     if "clear_override" in request.POST:
         logger.info("%s is ending impersonation of %s",
-                    get_original_user(request),
+                    actual_user,
                     get_override_user(request))
         clear_override(request)
 
     context = {
-        'original_user': get_original_user(request),
+        'original_user': actual_user,
         'override_user': get_override_user(request),
         'override_error_username': override_error_username,
         'override_error_msg': override_error_msg,
@@ -104,6 +92,13 @@ def _get_validation_module():
         return validate
 
 
+def _get_override_auth_module():
+    if hasattr(settings, "USERSERVICE_OVERRIDE_AUTH_MODULE"):
+        return _get_module(settings.USERSERVICE_OVERRIDE_AUTH_MODULE)
+    else:
+        return can_override
+
+
 def _get_module(base):
     module, attr = base.rsplit('.', 1)
     try:
@@ -117,6 +112,17 @@ def _get_module(base):
         raise ImproperlyConfigured('Module "%s" does not define a '
                                    '"%s" class' % (module, attr))
     return validation_module
+
+
+def can_override():
+    """
+    The up stream app needs to defined can_override function and set
+    USERSERVICE_OVERRIDE_AUTH_MODULE = app...can_override in your settings.py"
+    """
+    print("%s %s" % ("Your app needs to defined the can_override() function",
+                     "to check if the original user has the permission."))
+    print("Set USERSERVICE_OVERRIDE_AUTH_MODULE to that in the settings.py")
+    return False
 
 
 def validate(username):
