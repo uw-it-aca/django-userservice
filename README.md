@@ -1,3 +1,9 @@
+[![Build Status](https://api.travis-ci.org/uw-it-aca/django-userservice.svg?branch=master)](https://travis-ci.org/uw-it-aca/django-userservice)
+[![Coverage Status](https://coveralls.io/repos/uw-it-aca/django-userservice/badge.png?branch=master)](https://coveralls.io/r/uw-it-aca/django-userservice?branch=master)
+
+# django-userservice
+Impersonate users in your application.
+
 To use this - add this to your setting.py's INSTALLED_APPS:
 
     'userservice',
@@ -6,17 +12,14 @@ And this to your MIDDLEWARE_CLASSES:
 
     'userservice.user.UserServiceMiddleware',                                   
 
+This project uses a function defined in your app to control access to the user override functionality. To use, add this to your settings.py:
 
-This project uses a function "can_override()" defined in your app to control access to the user override app. It finds it via USERSERVICE_OVERRIDE_AUTH_MODULE in your setting.py:
+    USERSERVICE_OVERRIDE_AUTH_MODULE = 'your_app.module.can_override_user'
 
-    USERSERVICE_OVERRIDE_AUTH_MODULE = 'your_app.module.can_override'
+If you want to validate the user ids required for override with a local function, add this to your settings.py:
 
-If you want to validate the user ids required for override, add this to your settings.py:
-
-    USERSERVICE_VALIDATION_MODULE='userservice.validation.is_email'
-    
-The validation module can be replaced with a local implementation for your applicaiton.  
-
+    USERSERVICE_VALIDATION_MODULE='your_app.module.validate_user'
+     
 With all of that in place, request.user will be either the actual user, or the user you are impersonating.  To get more information about the current user, you can use:
 
     user_service = UserService() 
