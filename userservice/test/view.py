@@ -41,7 +41,7 @@ class TestView(TestCase):
         request.user = get_django_user('javerage')
         response = c.post(reverse("userservice_override"),
                           { "override_as": "testover" })
-        self.assertTrue("403-error" in str(response.content))
+        self.assertEquals(response.status_code, 401)
 
     @skipIf(missing_url("userservice_override"), "URLs not configured")
     @override_settings(USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.view.can_override')
@@ -139,7 +139,7 @@ def add_washington(username):
     return "%s@uw.edu" % username
 
 
-def can_override():
+def can_override(request):
     return True
 
 
