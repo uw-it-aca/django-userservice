@@ -41,10 +41,10 @@ class TestView(TestCase):
         request.user = get_django_user('javerage')
         response = c.post(reverse("userservice_override"),
                           { "override_as": "testover" })
-        self.assertTrue("403-error" in str(response.content))
+        self.assertEquals(response.status_code, 401)
 
     @skipIf(missing_url("userservice_override"), "URLs not configured")
-    @override_settings(USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.view.can_override')
+    @override_settings(USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.can_override')
     def test_override(self):
         c = Client()
 
@@ -73,8 +73,8 @@ class TestView(TestCase):
         self.assertEquals(get_original_user(request), 'javerage')
         self.assertEquals(get_override_user(request), None)
 
-    @override_settings(USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.view.can_override',
-                       USERSERVICE_VALIDATION_MODULE='userservice.test.view.under8')
+    @override_settings(USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.can_override',
+                       USERSERVICE_VALIDATION_MODULE='userservice.test.under8')
     def test_validation(self):
         c = Client()
 
@@ -93,8 +93,8 @@ class TestView(TestCase):
         self.assertEquals(get_original_user(request), 'javerage')
         self.assertEquals(get_override_user(request), None)
 
-    @override_settings(USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.view.can_override',
-                       USERSERVICE_VALIDATION_MODULE='userservice.test.view.over8')
+    @override_settings(USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.can_override',
+                       USERSERVICE_VALIDATION_MODULE='userservice.test.over8')
     def test_validation2(self):
         c = Client()
 
@@ -114,8 +114,8 @@ class TestView(TestCase):
         self.assertEquals(get_override_user(request), 'testover8')
 
 
-    @override_settings(USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.view.can_override',
-                       USERSERVICE_TRANSFORMATION_MODULE='userservice.test.view.add_washington')
+    @override_settings(USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.can_override',
+                       USERSERVICE_TRANSFORMATION_MODULE='userservice.test.add_washington')
     def test_transform(self):
         c = Client()
 
@@ -133,23 +133,3 @@ class TestView(TestCase):
         self.assertEquals(get_acting_user(request), 'javerage')
         self.assertEquals(get_original_user(request), 'javerage')
         self.assertEquals(get_override_user(request), 'testover8@uw.edu')
-
-
-def add_washington(username):
-    return "%s@uw.edu" % username
-
-
-def can_override():
-    return True
-
-
-def under8(username):
-    if len(username) < 8:
-        return None
-    return "Bad len"
-
-
-def over8(username):
-    if len(username) > 8:
-        return None
-    return "Bad len"
