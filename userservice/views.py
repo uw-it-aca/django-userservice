@@ -8,10 +8,11 @@ from userservice.user import (get_original_user, set_override_user,
                               get_override_user, clear_override)
 
 
+logger = logging.getLogger(__name__)
+
+
 @override_admin_required
 def support(request):
-    # timer = Timer()
-    logger = logging.getLogger(__name__)
 
     override_error_username = None
     override_error_msg = None
@@ -26,18 +27,15 @@ def support(request):
         validation_module = _get_validation_module()
         validation_error = validation_module(new_user)
         if validation_error is None:
-            logger.info("%s is impersonating %s",
-                        actual_user,
-                        new_user)
+            logger.info("{} is impersonating {}".format(actual_user, new_user))
             set_override_user(request, new_user)
         else:
             override_error_username = new_user
             override_error_msg = validation_error
 
     if "clear_override" in request.POST:
-        logger.info("%s is ending impersonation of %s",
-                    actual_user,
-                    get_override_user(request))
+        logger.info("{} is ending impersonation of {}".format(
+                    actual_user, get_override_user(request)))
         clear_override(request)
 
     context = {
