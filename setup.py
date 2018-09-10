@@ -23,7 +23,7 @@ setup(
     author_email="aca-it@uw.edu",
     include_package_data=True,
     install_requires=[
-        'django>=2.1,<3.0',
+        'django>2.1,<3.0',
         'unittest2',
     ],
     license='Apache License, Version 2.0',
