@@ -4,7 +4,7 @@ from django.test import Client
 from django.test.client import RequestFactory
 from django.test.utils import override_settings
 from unittest2 import skipIf
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from userservice.test import get_user as get_django_user
 from userservice.user import get_user, get_acting_user, get_override_user
 from userservice.user import get_original_user, set_override_user
