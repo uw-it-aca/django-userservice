@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.conf import settings
 from django.test.client import RequestFactory
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from userservice.user import UserServiceMiddleware, UserService
 from userservice.user import UninitializedError
 from userservice.test import get_user
