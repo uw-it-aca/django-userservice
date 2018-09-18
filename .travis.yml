@@ -2,19 +2,15 @@ sudo: false
 language: python
 python:
 - '3.6'
-env:
-- DJANGO_VERSION=1.11.*
-install:
-- pip install -r requirements.txt
 before_script:
+- pip install -r requirements.txt
 - pip install coverage
 - pip install python-coveralls
 - pip install pycodestyle
-- pip install -U Django==$DJANGO_VERSION
 - cp travis-ci/manage.py manage.py
 - python manage.py migrate --noinput;
 script:
-- pycodestyle userservice/ --exclude userservice/test
+- pycodestyle userservice/
 - python -m compileall userservice/
 - coverage run --source=userservice/ manage.py test userservice
 after_script:
