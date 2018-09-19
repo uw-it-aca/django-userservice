@@ -15,7 +15,7 @@ def can_override(request):
 
 
 def add_washington(username):
-    return "%s@uw.edu" % username
+    return "{}@uw.edu".format(username)
 
 
 def under8(username):

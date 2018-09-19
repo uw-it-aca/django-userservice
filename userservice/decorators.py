@@ -16,11 +16,10 @@ def override_admin_required(view_func):
     (act as) users. Calls login_required in case the user is not authenticated.
     """
     def wrapper(request, *args, **kwargs):
-        if hasattr(settings, 'USERSERVICE_OVERRIDE_AUTH_MODULE'):
-            auth_func = import_string(
-                settings.USERSERVICE_OVERRIDE_AUTH_MODULE)
-        else:
-            auth_func = can_override_user
+        func_str = getattr(
+            settings, 'USERSERVICE_OVERRIDE_AUTH_MODULE',
+            'userservice.decorators.can_override_user')
+        auth_func = import_string(func_str)
 
         if auth_func(request):
             return view_func(request, *args, **kwargs)
