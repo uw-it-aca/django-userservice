@@ -22,10 +22,7 @@ setup(
     author="UW-IT AXDD",
     author_email="aca-it@uw.edu",
     include_package_data=True,
-    install_requires=[
-        'django>2.1,<3.0',
-        'unittest2',
-    ],
+    install_requires=['django>2.1,<3.0'],
     license='Apache License, Version 2.0',
     description=('User abstraction and impersonation for Django'),
     long_description=README,
