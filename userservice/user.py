@@ -25,7 +25,7 @@ class UserService:
     def _require_middleware(self):
         if "initialized" not in self._get_current_user_data():
             if settings.DEBUG:
-                print("You need to have this in settings.MIDDLEWARE_CLASSES: "
+                print("You need to have this in settings.MIDDLEWARE: "
                       "'userservice.user.UserServiceMiddleware'")
 
             raise UninitializedError("Missing UserServiceMiddleware")
