@@ -22,9 +22,8 @@ deploy:
   provider: pypi
   user: uw-it-aca
   skip_cleanup: true
+  password:
+    secure: HRCc62TaAPwnepuK9hydrYPi8BmjrG7I5X88zKuxBY3EeHbgBQxy2Wuxmm/dQjQ/rTqVEwHXPw/P6sXmMdKI38Gnq0wyKqyax9C9vLmuS1d28uqEv1qV4d33HMHCt9XGmiV658z2TQtfYS9Ivg0NiViHrCSrvN209dvvxizZ8LM=
   on:
     tags: true
     python: '3.6'
-    condition: $DJANGO_VERSION = 1.11.*
-  password:
-    secure: HRCc62TaAPwnepuK9hydrYPi8BmjrG7I5X88zKuxBY3EeHbgBQxy2Wuxmm/dQjQ/rTqVEwHXPw/P6sXmMdKI38Gnq0wyKqyax9C9vLmuS1d28uqEv1qV4d33HMHCt9XGmiV658z2TQtfYS9Ivg0NiViHrCSrvN209dvvxizZ8LM=
