@@ -1,9 +1,9 @@
+from unittest import skipIf
 from django.test import TestCase
 from django.conf import settings
 from django.test import Client
 from django.test.client import RequestFactory
 from django.test.utils import override_settings
-from unittest2 import skipIf
 from django.urls import reverse
 from userservice.test import get_user as get_django_user
 from userservice.user import get_user, get_acting_user, get_override_user
