@@ -5,7 +5,7 @@ python:
 before_script:
 - pip install -r requirements.txt
 - pip install coverage
-- pip install python-coveralls
+- pip install coveralls
 - pip install pycodestyle
 - cp travis-ci/manage.py manage.py
 - python manage.py migrate --noinput;
