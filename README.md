@@ -1,7 +1,7 @@
 # django-userservice
 
 [![Build Status](https://github.com/uw-it-aca/django-userservice/workflows/tests/badge.svg?branch=main)](https://github.com/uw-it-aca/django-userservice/actions)
-[![Coverage Status](https://coveralls.io/repos/uw-it-aca/django-userservice/badge.svg?branch=master)](https://coveralls.io/r/uw-it-aca/django-userservice?branch=master)
+[![Coverage Status](https://coveralls.io/repos/uw-it-aca/django-userservice/badge.svg?branch=main)](https://coveralls.io/r/uw-it-aca/django-userservice?branch=main)
 [![PyPi Version](https://img.shields.io/pypi/v/django-userservice.svg)](https://pypi.python.org/pypi/django-userservice)
 ![Python versions](https://img.shields.io/pypi/pyversions/django-userservice.svg)
 
