@@ -24,9 +24,9 @@ def support(request):
     if not actual_user:
         raise Exception("No user in session")
 
-    if "override_as" in request.POST:
+    if "override_as" in request.data:
         transformation_module = _get_username_transform_module()
-        new_user = transformation_module(request.POST["override_as"])
+        new_user = transformation_module(request.data["override_as"])
         validation_module = _get_validation_module()
         validation_error = validation_module(new_user)
         if validation_error is None:
@@ -36,7 +36,7 @@ def support(request):
             override_error_username = new_user
             override_error_msg = validation_error
 
-    if "clear_override" in request.POST:
+    if "clear_override" in request.data:
         logger.info("{} is ending impersonation of {}".format(
                     actual_user, get_override_user(request)))
         clear_override(request)
