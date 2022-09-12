@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 def support(request):
 
     body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
+    body = json.loads(body_unicode) if body_unicode else {}
     content = body['content']
 
     override_error_username = None
