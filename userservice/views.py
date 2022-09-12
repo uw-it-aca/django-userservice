@@ -17,10 +17,9 @@ logger = logging.getLogger(__name__)
 
 @override_admin_required
 def support(request):
-
-    body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode) if body_unicode else {}
-    content = body['content']
+    print(request.body)
+    body = json.loads(request.body) if request.body else {}
+    content = body.get('content', {})
 
     override_error_username = None
     override_error_msg = None
