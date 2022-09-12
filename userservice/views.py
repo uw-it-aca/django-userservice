@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
+import json
 from django.shortcuts import render
 from django import template
 from django.conf import settings
@@ -17,6 +18,10 @@ logger = logging.getLogger(__name__)
 @override_admin_required
 def support(request):
 
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    content = body['content']
+
     override_error_username = None
     override_error_msg = None
 
@@ -24,9 +29,9 @@ def support(request):
     if not actual_user:
         raise Exception("No user in session")
 
-    if "override_as" in request.body:
+    if "override_as" in content:
         transformation_module = _get_username_transform_module()
-        new_user = transformation_module(request.body["override_as"])
+        new_user = transformation_module(content["override_as"])
         validation_module = _get_validation_module()
         validation_error = validation_module(new_user)
         if validation_error is None:
@@ -36,7 +41,7 @@ def support(request):
             override_error_username = new_user
             override_error_msg = validation_error
 
-    if "clear_override" in request.body:
+    if "clear_override" in content:
         logger.info("{} is ending impersonation of {}".format(
                     actual_user, get_override_user(request)))
         clear_override(request)
