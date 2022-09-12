@@ -17,9 +17,13 @@ logger = logging.getLogger(__name__)
 
 @override_admin_required
 def support(request):
-    print(request.body)
-    body = json.loads(request.body) if request.body else {}
-    content = body.get('content', {})
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if request.method == 'POST':
+            content = json.loads(request.body)
+        else:
+            content = {}
+    else:
+        content = request.POST
 
     override_error_username = None
     override_error_msg = None
