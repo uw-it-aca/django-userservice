@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-from django.conf.urls import url
+from django.urls import re_path
 from userservice.views import support
 
 
 urlpatterns = [
-    url(r'', support, name="userservice_override"),
+    re_path(r'^$', support, name='userservice_override'),
 ]
