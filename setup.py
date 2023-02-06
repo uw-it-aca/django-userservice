@@ -22,8 +22,8 @@ setup(
     author_email="aca-it@uw.edu",
     include_package_data=True,
     install_requires=[
-        'django>2.1,<3.3'
-        ],
+        'Django<5'
+    ],
     license='Apache License, Version 2.0',
     description=('User abstraction and impersonation for Django'),
     long_description=README,
