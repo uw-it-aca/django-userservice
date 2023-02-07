@@ -20,15 +20,13 @@ logger = getLogger(__name__)
 class SupportView(TemplateView):
     http_method_names = ['get', 'post']
     template_name = 'support.html'
-    override_error_username = None
-    override_error_msg = None
 
     def get_context_data(self, **kwargs):
         context = {
             'original_user': get_original_user(self.request),
             'override_user': get_override_user(self.request),
-            'override_error_username': self.override_error_username,
-            'override_error_msg': self.override_error_msg,
+            'override_error_username': kwargs.get('override_error_username'),
+            'override_error_msg': kwargs.get('override_error_msg'),
             'has_extra_template': False,
             'extra_template': None,
             'wrapper_template': 'support_wrapper.html',
@@ -58,29 +56,27 @@ class SupportView(TemplateView):
             content = request.POST
 
         if 'override_as' in content:
-            self.begin_override(content['override_as'])
+            transformation_module = self.get_username_transform_module()
+            validation_module = self.get_validation_module()
+
+            new_user = transformation_module(content['override_as'])
+            validation_error = validation_module(new_user)
+
+            if validation_error is None:
+                logger.info('{} is impersonating {}'.format(
+                    get_original_user(request), new_user))
+                set_override_user(request, new_user)
+            else:
+                kwargs['override_error_username'] = new_user
+                kwargs['override_error_msg'] = validation_error
+
         elif 'clear_override' in content:
-            self.clear_override()
+            logger.info('{} is ending impersonation of {}'.format(
+                get_original_user(request), get_override_user(request)))
+            clear_override(request)
 
-    def begin_override(self, override_as):
-        transformation_module = self.get_username_transform_module()
-        validation_module = self.get_validation_module()
-
-        new_user = transformation_module(override_as)
-        validation_error = validation_module(new_user)
-
-        if validation_error is None:
-            logger.info('{} is impersonating {}'.format(
-                get_original_user(self.request), new_user))
-            set_override_user(self.request, new_user)
-        else:
-            self.override_error_username = new_user
-            self.override_error_msg = validation_error
-
-    def clear_override(self):
-        logger.info('{} is ending impersonation of {}'.format(
-            get_original_user(self.request), get_override_user(self.request)))
-        clear_override(self.request)
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
 
     @staticmethod
     def get_username_transform_module():
