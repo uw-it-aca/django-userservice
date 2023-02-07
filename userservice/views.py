@@ -2,96 +2,100 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-import logging
-from django.shortcuts import render
 from django import template
 from django.conf import settings
+from django.utils.decorators import method_decorator
 from django.utils.module_loading import import_string
+from django.views.generic import TemplateView
 from userservice.decorators import override_admin_required
-from userservice.user import (get_original_user, set_override_user,
-                              get_override_user, clear_override)
+from userservice.user import (
+    get_original_user, set_override_user, get_override_user, clear_override)
+from logging import getLogger
+import json
+
+logger = getLogger(__name__)
 
 
-logger = logging.getLogger(__name__)
+@method_decorator(override_admin_required, name='dispatch')
+class SupportView(TemplateView):
+    http_method_names = ['get', 'post']
+    template_name = 'support.html'
 
+    def get_context_data(self, **kwargs):
+        context = {
+            'original_user': get_original_user(self.request),
+            'override_user': get_override_user(self.request),
+            'override_error_username': kwargs.get('override_error_username'),
+            'override_error_msg': kwargs.get('override_error_msg'),
+            'has_extra_template': False,
+            'extra_template': None,
+            'wrapper_template': 'support_wrapper.html',
+        }
 
-@override_admin_required
-def support(request):
+        try:
+            extra_name = 'userservice/user_override_extra_info.html'
+            template.loader.get_template(extra_name)
+            context['has_extra_template'] = True
+            context['extra_template'] = extra_name
+        except template.TemplateDoesNotExist:
+            pass
 
-    override_error_username = None
-    override_error_msg = None
+        try:
+            wrapper_name = 'userservice/user_override_wrapper.html'
+            template.loader.get_template(wrapper_name)
+            context['wrapper_template'] = wrapper_name
+        except template.TemplateDoesNotExist:
+            pass
 
-    actual_user = get_original_user(request)
-    if not actual_user:
-        raise Exception("No user in session")
+        return context
 
-    if "override_as" in request.POST:
-        transformation_module = _get_username_transform_module()
-        new_user = transformation_module(request.POST["override_as"])
-        validation_module = _get_validation_module()
-        validation_error = validation_module(new_user)
-        if validation_error is None:
-            logger.info("{} is impersonating {}".format(actual_user, new_user))
-            set_override_user(request, new_user)
+    def post(self, request, *args, **kwargs):
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            content = json.loads(request.body)
         else:
-            override_error_username = new_user
-            override_error_msg = validation_error
+            content = request.POST
 
-    if "clear_override" in request.POST:
-        logger.info("{} is ending impersonation of {}".format(
-                    actual_user, get_override_user(request)))
-        clear_override(request)
+        if 'override_as' in content:
+            transformation_module = self.get_username_transform_module()
+            validation_module = self.get_validation_module()
 
-    context = {
-        'original_user': actual_user,
-        'override_user': get_override_user(request),
-        'override_error_username': override_error_username,
-        'override_error_msg': override_error_msg,
-    }
+            new_user = transformation_module(content['override_as'])
+            validation_error = validation_module(new_user)
 
-    try:
-        template_name = "userservice/user_override_extra_info.html"
-        template.loader.get_template(template_name)
-        context['has_extra_template'] = True
-        context['extra_template'] = template_name
-    except template.TemplateDoesNotExist:
-        # This is a fine exception - there doesn't need to be an extra info
-        # template
-        pass
+            if validation_error is None:
+                logger.info('{} is impersonating {}'.format(
+                    get_original_user(request), new_user))
+                set_override_user(request, new_user)
+            else:
+                kwargs['override_error_username'] = new_user
+                kwargs['override_error_msg'] = validation_error
 
-    try:
-        template.loader.get_template("userservice/user_override_wrapper.html")
-        context['wrapper_template'] = 'userservice/user_override_wrapper.html'
-    except template.TemplateDoesNotExist:
-        context['wrapper_template'] = 'support_wrapper.html'
-        # This is a fine exception - there doesn't need to be an extra info
-        # template
-        pass
+        elif 'clear_override' in content:
+            logger.info('{} is ending impersonation of {}'.format(
+                get_original_user(request), get_override_user(request)))
+            clear_override(request)
 
-    return render(request,
-                  'support.html',
-                  context)
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
 
+    @staticmethod
+    def get_username_transform_module():
+        if hasattr(settings, 'USERSERVICE_TRANSFORMATION_MODULE'):
+            return import_string(settings.USERSERVICE_TRANSFORMATION_MODULE)
+        else:
+            return transform
 
-def _get_username_transform_module():
-    if hasattr(settings, "USERSERVICE_TRANSFORMATION_MODULE"):
-        return import_string(settings.USERSERVICE_TRANSFORMATION_MODULE)
-    else:
-        return transform
-
-
-def _get_validation_module():
-    if hasattr(settings, "USERSERVICE_VALIDATION_MODULE"):
-        return import_string(settings.USERSERVICE_VALIDATION_MODULE)
-    else:
-        return validate
+    @staticmethod
+    def get_validation_module():
+        if hasattr(settings, 'USERSERVICE_VALIDATION_MODULE'):
+            return import_string(settings.USERSERVICE_VALIDATION_MODULE)
+        else:
+            return validate
 
 
 def validate(username):
-    error_msg = "No override user supplied"
-    if (len(username) > 0):
-        error_msg = None
-    return error_msg
+    if not len(username):
+        return 'No override user supplied'
 
 
 def transform(username):
