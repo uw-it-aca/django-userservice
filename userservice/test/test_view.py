@@ -12,6 +12,7 @@ from django.urls import reverse
 from userservice.test import get_user as get_django_user
 from userservice.user import get_user, get_acting_user, get_override_user
 from userservice.user import get_original_user, set_override_user
+import json
 
 
 def missing_url(name):
@@ -97,13 +98,24 @@ class TestView(TestCase):
 
         headers = {"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
         response = c.post(reverse("userservice_override"),
-                          {"override_as": "testover"}, **headers)
+                          json.dumps({"override_as": "testover"}), **headers)
         request.session = c.session
 
         self.assertEquals(get_user(request), 'testover')
         self.assertEquals(get_acting_user(request), 'javerage')
         self.assertEquals(get_original_user(request), 'javerage')
         self.assertEquals(get_override_user(request), 'testover')
+
+        response = c.post(reverse("userservice_override"),
+                          json.dumps({"clear_override": 1}), **headers)
+
+        request = RequestFactory().get("/")
+        request.session = c.session
+
+        self.assertEquals(get_user(request), 'javerage')
+        self.assertEquals(get_acting_user(request), 'javerage')
+        self.assertEquals(get_original_user(request), 'javerage')
+        self.assertEquals(get_override_user(request), None)
 
     @override_settings(
         USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.can_override',
