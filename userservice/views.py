@@ -17,7 +17,7 @@ logger = getLogger(__name__)
 
 
 @method_decorator(override_admin_required, name='dispatch')
-def SupportView(TemplateView):
+class SupportView(TemplateView):
     http_method_names = ['get', 'post']
     template_name = 'support.html'
     override_error_username = None
