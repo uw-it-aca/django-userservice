@@ -82,6 +82,29 @@ class TestView(TestCase):
         self.assertEquals(get_original_user(request), 'javerage')
         self.assertEquals(get_override_user(request), None)
 
+    @skipIf(missing_url("userservice_override"), "URLs not configured")
+    @override_settings(
+        USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.can_override')
+    def test_async_override(self):
+        c = Client()
+
+        get_django_user('javerage')
+        c.login(username='javerage', password='pass')
+
+        request = RequestFactory().get('/')
+        request.session = c.session
+        request.user = get_django_user('javerage')
+
+        headers = {"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
+        response = c.post(reverse("userservice_override"),
+                          {"override_as": "testover"}, **headers)
+        request.session = c.session
+
+        self.assertEquals(get_user(request), 'testover')
+        self.assertEquals(get_acting_user(request), 'javerage')
+        self.assertEquals(get_original_user(request), 'javerage')
+        self.assertEquals(get_override_user(request), 'testover')
+
     @override_settings(
         USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.can_override',
         USERSERVICE_VALIDATION_MODULE='userservice.test.under8')
