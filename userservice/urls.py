@@ -1,10 +1,11 @@
-# Copyright 2021 UW-IT, University of Washington
+# Copyright 2023 UW-IT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
 
-from django.conf.urls import url
+
+from django.urls import re_path
 from userservice.views import support
 
 
 urlpatterns = [
-    url(r'', support, name="userservice_override"),
+    re_path(r'^$', support, name='userservice_override'),
 ]
