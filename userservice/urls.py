@@ -3,9 +3,9 @@
 
 
 from django.urls import re_path
-from userservice.views import support
+from userservice.views import SupportView
 
 
 urlpatterns = [
-    re_path(r'^$', support, name='userservice_override'),
+    re_path(r'^$', SupportView.as_view(), name='userservice_override'),
 ]
