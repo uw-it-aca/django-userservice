@@ -1,5 +1,6 @@
-# Copyright 2021 UW-IT, University of Washington
+# Copyright 2023 UW-IT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
+
 
 from unittest import skipIf
 from django.test import TestCase
@@ -72,6 +73,42 @@ class TestView(TestCase):
 
         response = c.post(reverse("userservice_override"),
                           {"clear_override": 1})
+
+        request = RequestFactory().get("/")
+        request.session = c.session
+
+        self.assertEquals(get_user(request), 'javerage')
+        self.assertEquals(get_acting_user(request), 'javerage')
+        self.assertEquals(get_original_user(request), 'javerage')
+        self.assertEquals(get_override_user(request), None)
+
+    @skipIf(missing_url("userservice_override"), "URLs not configured")
+    @override_settings(
+        USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.can_override')
+    def test_async_override(self):
+        c = Client()
+
+        get_django_user('javerage')
+        c.login(username='javerage', password='pass')
+
+        request = RequestFactory().get('/')
+        request.session = c.session
+        request.user = get_django_user('javerage')
+
+        headers = {"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
+        response = c.post(
+            reverse("userservice_override"), {"override_as": "testover"},
+            content_type='application/json', **headers)
+        request.session = c.session
+
+        self.assertEquals(get_user(request), 'testover')
+        self.assertEquals(get_acting_user(request), 'javerage')
+        self.assertEquals(get_original_user(request), 'javerage')
+        self.assertEquals(get_override_user(request), 'testover')
+
+        response = c.post(
+            reverse("userservice_override"), {"clear_override": 1},
+            content_type='application/json', **headers)
 
         request = RequestFactory().get("/")
         request.session = c.session
