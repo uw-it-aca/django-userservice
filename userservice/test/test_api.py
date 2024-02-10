@@ -1,4 +1,4 @@
-# Copyright 2023 UW-IT, University of Washington
+# Copyright 2024 UW-IT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
 
 
@@ -17,20 +17,20 @@ class TestAPI(TestCase):
         request = RequestFactory().get("/")
         request.session = {}
 
-        self.assertEquals(get_user(request), None)
-        self.assertEquals(get_acting_user(request), None)
-        self.assertEquals(get_override_user(request), None)
-        self.assertEquals(get_original_user(request), None)
+        self.assertEqual(get_user(request), None)
+        self.assertEqual(get_acting_user(request), None)
+        self.assertEqual(get_override_user(request), None)
+        self.assertEqual(get_original_user(request), None)
 
     def test_user(self):
         request = RequestFactory().get("/")
         request.session = {}
         request.user = get_django_user('javerage')
 
-        self.assertEquals(get_user(request), 'javerage')
-        self.assertEquals(get_acting_user(request), 'javerage')
-        self.assertEquals(get_override_user(request), None)
-        self.assertEquals(get_original_user(request), 'javerage')
+        self.assertEqual(get_user(request), 'javerage')
+        self.assertEqual(get_acting_user(request), 'javerage')
+        self.assertEqual(get_override_user(request), None)
+        self.assertEqual(get_original_user(request), 'javerage')
 
     def test_override(self):
         request = RequestFactory().get("/")
@@ -38,11 +38,11 @@ class TestAPI(TestCase):
         request.user = get_django_user('javerage')
 
         set_override_user(request, "supportticket")
-        self.assertEquals(request.user.username, 'supportticket')
-        self.assertEquals(get_user(request), 'supportticket')
-        self.assertEquals(get_acting_user(request), 'javerage')
-        self.assertEquals(get_override_user(request), 'supportticket')
-        self.assertEquals(get_original_user(request), 'javerage')
+        self.assertEqual(request.user.username, 'supportticket')
+        self.assertEqual(get_user(request), 'supportticket')
+        self.assertEqual(get_acting_user(request), 'javerage')
+        self.assertEqual(get_override_user(request), 'supportticket')
+        self.assertEqual(get_original_user(request), 'javerage')
 
     def test_clear_override(self):
         request = RequestFactory().get("/")
@@ -51,12 +51,12 @@ class TestAPI(TestCase):
 
         set_override_user(request, "supportticket")
         clear_override(request)
-        self.assertEquals(request.user.username, 'javerage')
+        self.assertEqual(request.user.username, 'javerage')
 
-        self.assertEquals(get_user(request), 'javerage')
-        self.assertEquals(get_acting_user(request), 'javerage')
-        self.assertEquals(get_override_user(request), None)
-        self.assertEquals(get_original_user(request), 'javerage')
+        self.assertEqual(get_user(request), 'javerage')
+        self.assertEqual(get_acting_user(request), 'javerage')
+        self.assertEqual(get_override_user(request), None)
+        self.assertEqual(get_original_user(request), 'javerage')
 
     def test_legacy(self):
         request = RequestFactory().get("/")
@@ -68,10 +68,10 @@ class TestAPI(TestCase):
 
         UserServiceMiddleware().process_request(request)
 
-        self.assertEquals(UserService().get_user(), 'override')
-        self.assertEquals(UserService().get_acting_user(), 'javerage')
-        self.assertEquals(UserService().get_original_user(), 'javerage')
-        self.assertEquals(UserService().get_override_user(), 'override')
+        self.assertEqual(UserService().get_user(), 'override')
+        self.assertEqual(UserService().get_acting_user(), 'javerage')
+        self.assertEqual(UserService().get_original_user(), 'javerage')
+        self.assertEqual(UserService().get_override_user(), 'override')
         UserServiceMiddleware().process_response(request, None)
 
     def test_legacy_other_way(self):
@@ -83,8 +83,8 @@ class TestAPI(TestCase):
 
         UserService().set_override_user('o2')
 
-        self.assertEquals(get_user(request), 'o2')
-        self.assertEquals(get_acting_user(request), 'javerage')
-        self.assertEquals(get_override_user(request), 'o2')
-        self.assertEquals(get_original_user(request), 'javerage')
+        self.assertEqual(get_user(request), 'o2')
+        self.assertEqual(get_acting_user(request), 'javerage')
+        self.assertEqual(get_override_user(request), 'o2')
+        self.assertEqual(get_original_user(request), 'javerage')
         UserServiceMiddleware().process_response(request, None)

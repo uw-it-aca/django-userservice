@@ -1,4 +1,4 @@
-# Copyright 2023 UW-IT, University of Washington
+# Copyright 2024 UW-IT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
 
 
@@ -47,7 +47,7 @@ class TestView(TestCase):
         request.user = get_django_user('javerage')
         response = c.post(reverse("userservice_override"),
                           {"override_as": "testover"})
-        self.assertEquals(response.status_code, 401)
+        self.assertEqual(response.status_code, 401)
 
     @skipIf(missing_url("userservice_override"), "URLs not configured")
     @override_settings(
@@ -66,10 +66,10 @@ class TestView(TestCase):
                           {"override_as": "testover"})
         request.session = c.session
 
-        self.assertEquals(get_user(request), 'testover')
-        self.assertEquals(get_acting_user(request), 'javerage')
-        self.assertEquals(get_original_user(request), 'javerage')
-        self.assertEquals(get_override_user(request), 'testover')
+        self.assertEqual(get_user(request), 'testover')
+        self.assertEqual(get_acting_user(request), 'javerage')
+        self.assertEqual(get_original_user(request), 'javerage')
+        self.assertEqual(get_override_user(request), 'testover')
 
         response = c.post(reverse("userservice_override"),
                           {"clear_override": 1})
@@ -77,10 +77,10 @@ class TestView(TestCase):
         request = RequestFactory().get("/")
         request.session = c.session
 
-        self.assertEquals(get_user(request), 'javerage')
-        self.assertEquals(get_acting_user(request), 'javerage')
-        self.assertEquals(get_original_user(request), 'javerage')
-        self.assertEquals(get_override_user(request), None)
+        self.assertEqual(get_user(request), 'javerage')
+        self.assertEqual(get_acting_user(request), 'javerage')
+        self.assertEqual(get_original_user(request), 'javerage')
+        self.assertEqual(get_override_user(request), None)
 
     @skipIf(missing_url("userservice_override"), "URLs not configured")
     @override_settings(
@@ -101,10 +101,10 @@ class TestView(TestCase):
             content_type='application/json', **headers)
         request.session = c.session
 
-        self.assertEquals(get_user(request), 'testover')
-        self.assertEquals(get_acting_user(request), 'javerage')
-        self.assertEquals(get_original_user(request), 'javerage')
-        self.assertEquals(get_override_user(request), 'testover')
+        self.assertEqual(get_user(request), 'testover')
+        self.assertEqual(get_acting_user(request), 'javerage')
+        self.assertEqual(get_original_user(request), 'javerage')
+        self.assertEqual(get_override_user(request), 'testover')
 
         response = c.post(
             reverse("userservice_override"), {"clear_override": 1},
@@ -113,10 +113,10 @@ class TestView(TestCase):
         request = RequestFactory().get("/")
         request.session = c.session
 
-        self.assertEquals(get_user(request), 'javerage')
-        self.assertEquals(get_acting_user(request), 'javerage')
-        self.assertEquals(get_original_user(request), 'javerage')
-        self.assertEquals(get_override_user(request), None)
+        self.assertEqual(get_user(request), 'javerage')
+        self.assertEqual(get_acting_user(request), 'javerage')
+        self.assertEqual(get_original_user(request), 'javerage')
+        self.assertEqual(get_override_user(request), None)
 
     @override_settings(
         USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.can_override',
@@ -134,10 +134,10 @@ class TestView(TestCase):
         response = c.post(reverse("userservice_override"),
                           {"override_as": "testover8"})
 
-        self.assertEquals(get_user(request), 'javerage')
-        self.assertEquals(get_acting_user(request), 'javerage')
-        self.assertEquals(get_original_user(request), 'javerage')
-        self.assertEquals(get_override_user(request), None)
+        self.assertEqual(get_user(request), 'javerage')
+        self.assertEqual(get_acting_user(request), 'javerage')
+        self.assertEqual(get_original_user(request), 'javerage')
+        self.assertEqual(get_override_user(request), None)
 
     @override_settings(
         USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.can_override',
@@ -155,10 +155,10 @@ class TestView(TestCase):
         response = c.post(reverse("userservice_override"),
                           {"override_as": "testover8"})
 
-        self.assertEquals(get_user(request), 'testover8')
-        self.assertEquals(get_acting_user(request), 'javerage')
-        self.assertEquals(get_original_user(request), 'javerage')
-        self.assertEquals(get_override_user(request), 'testover8')
+        self.assertEqual(get_user(request), 'testover8')
+        self.assertEqual(get_acting_user(request), 'javerage')
+        self.assertEqual(get_original_user(request), 'javerage')
+        self.assertEqual(get_override_user(request), 'testover8')
 
     @override_settings(
         USERSERVICE_OVERRIDE_AUTH_MODULE='userservice.test.can_override',
@@ -176,7 +176,7 @@ class TestView(TestCase):
         response = c.post(reverse("userservice_override"),
                           {"override_as": "testover8"})
 
-        self.assertEquals(get_user(request), 'testover8@uw.edu')
-        self.assertEquals(get_acting_user(request), 'javerage')
-        self.assertEquals(get_original_user(request), 'javerage')
-        self.assertEquals(get_override_user(request), 'testover8@uw.edu')
+        self.assertEqual(get_user(request), 'testover8@uw.edu')
+        self.assertEqual(get_acting_user(request), 'javerage')
+        self.assertEqual(get_original_user(request), 'javerage')
+        self.assertEqual(get_override_user(request), 'testover8@uw.edu')
