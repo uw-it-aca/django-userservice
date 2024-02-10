@@ -8,6 +8,7 @@ MIDDLEWARE += [
     'userservice.user.UserServiceMiddleware',
 ]
 
+# Example usage of the userservice log filter and formatting
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
