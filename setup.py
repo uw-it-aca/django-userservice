@@ -22,7 +22,7 @@ setup(
     author_email="aca-it@uw.edu",
     include_package_data=True,
     install_requires=[
-        'Django~=4.2'
+        'Django>=3.2,<5'
     ],
     license='Apache License, Version 2.0',
     description=('User abstraction and impersonation for Django'),

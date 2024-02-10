@@ -66,12 +66,11 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          sudo apt-get install python-dev libxml2-dev libxmlsec1-dev
           python -m pip install --upgrade pip
           pip install -e .
           pip install coverage coveralls==3.3.1
 
-      - name: Upgrade Django ${{ matrix.django-version }}
+      - name: Install Django ${{ matrix.django-version }}
         run: pip install "Django~=${{ matrix.django-version }}.0"
 
       - name: Setup Django
