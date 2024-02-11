@@ -1,4 +1,4 @@
-# Copyright 2023 UW-IT, University of Washington
+# Copyright 2024 UW-IT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
 
 
@@ -6,7 +6,7 @@ import logging
 from django.http import HttpRequest
 from django.conf import settings
 from django.contrib.auth.models import User
-from threading import currentThread
+from threading import current_thread
 from userservice.username import get_uid
 
 
@@ -19,11 +19,11 @@ class UserService:
     logger = logging.getLogger(__name__)
 
     def _get_current_user_data(self):
-        thread_id = currentThread()
+        thread_id = current_thread()
         if not UserService._user_data:
             return {}
         if thread_id in UserService._user_data:
-            return UserService._user_data[currentThread()]
+            return UserService._user_data[current_thread()]
         return {}
 
     def _require_middleware(self):
@@ -92,7 +92,7 @@ class UserServiceMiddleware(object):
         return response
 
     def process_request(self, request):
-        thread = currentThread()
+        thread = current_thread()
         UserService._user_data[thread] = {}
         UserService._user_data[thread]["initialized"] = True
 
@@ -101,7 +101,7 @@ class UserServiceMiddleware(object):
         UserService._user_data[thread]["request"] = request
 
     def process_response(self, request, response):
-        thread = currentThread()
+        thread = current_thread()
         UserService._user_data[thread] = {}
         return response
 
