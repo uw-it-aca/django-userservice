@@ -18,11 +18,11 @@ setup(
     name='Django-UserService',
     version=VERSION,
     packages=['userservice'],
-    author="UW-IT T&LS",
+    author="UW-IT Student & Educational Technology Services",
     author_email="aca-it@uw.edu",
     include_package_data=True,
     install_requires=[
-        'Django>=3.2,<5'
+        'django>=3.2,<6'
     ],
     license='Apache License, Version 2.0',
     description=('User abstraction and impersonation for Django'),
